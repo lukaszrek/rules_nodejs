@@ -100,6 +100,11 @@ cd "{root}" && "{npm}" {npm_args}
       repository_ctx.symlink(
           repository_ctx.attr.package_lock_json,
           repository_ctx.path("package-lock.json"))
+  if repository_ctx.attr.npm_rc:
+      repository_ctx.symlink(
+          repository_ctx.attr.npm_rc,
+          repository_ctx.path(".npmrc")
+      )
 
   _add_data_dependencies(repository_ctx)
 
@@ -135,6 +140,10 @@ npm_install = repository_rule(
             allow_files = True,
             single_file = True,
         ),
+        "npm_rc": attr.label(
+            allow_files = True,
+            single_file = True,
+        ),
         "prod_only": attr.bool(
             default = False,
             doc = "Don't install devDependencies",
@@ -166,6 +175,11 @@ def _yarn_install_impl(repository_ctx):
       repository_ctx.symlink(
           repository_ctx.attr.yarn_lock,
           repository_ctx.path("yarn.lock"))
+  if repository_ctx.attr.npm_rc:
+      repository_ctx.symlink(
+          repository_ctx.attr.npm_rc,
+          repository_ctx.path(".npmrc")
+      )
 
   _add_data_dependencies(repository_ctx)
 
@@ -200,6 +214,10 @@ yarn_install = repository_rule(
         "yarn_lock": attr.label(
             allow_files = True,
             mandatory = True,
+            single_file = True,
+        ),
+        "npm_rc": attr.label(
+            allow_files = True,
             single_file = True,
         ),
         "prod_only": attr.bool(
